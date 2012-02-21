@@ -1,0 +1,3 @@
+#!/bin/bash
+mkdir -p .m4
+autoreconf -f -i -s -m -v
