@@ -1,2 +1,4 @@
+MAKEFLAGS=--no-p -j
+QUIET=yes
 SUBDIRS = lib src
 ACLOCAL_AMFLAGS = -I .m4

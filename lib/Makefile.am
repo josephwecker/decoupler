@@ -1,3 +1,4 @@
+MAKEFLAGS=--no-p -j
 lib_LTLIBRARIES = libdio.la
 libdio_la_SOURCES = dio.c dio.h
 include_HEADERS = dio.h

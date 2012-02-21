@@ -1,6 +1,20 @@
 #!/bin/bash
+
+set -e
+echo "Running autoreconf..."
 mkdir -p .m4
-autoreconf -f -i -s -v
+autoreconf -f -i -s
+echo ""
+echo "Configuring..."
 ./configure
-make clean
+echo ""
+echo "Making..."
+set +e
+make -s clean 2> /dev/null
 make
+res=$?
+echo ""
+if [ $res -eq 0 ]; then echo "--== SUCCESS ==--"
+else echo "--== FAIL ==--"
+fi
+echo ""
