@@ -4,6 +4,6 @@
 
 
 int main(int argc, char *argv[]) {
-    printf("check\n");
+    printf("check: %d\n", test_int);
     return 0;
 }

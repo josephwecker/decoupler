@@ -1,3 +1,6 @@
 #!/bin/bash
 mkdir -p .m4
-autoreconf -f -i -s -m -v
+autoreconf -f -i -s -v
+./configure
+make clean
+make
