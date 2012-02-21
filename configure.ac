@@ -1,7 +1,7 @@
 AC_INIT([dio], [0.0.1], [jwecker@justin.tv])
 AC_CONFIG_MACRO_DIR([.m4])
 AC_CONFIG_AUX_DIR([.build-aux])
-AM_INIT_AUTOMAKE([gnu -Wall -Werror])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 LT_INIT
 AC_PROG_CC
 AC_CONFIG_SRCDIR([lib/dio.c])
