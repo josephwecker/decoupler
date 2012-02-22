@@ -8,5 +8,5 @@ AC_CONFIG_SRCDIR([lib/dio.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile lib/Makefile src/Makefile])
 AC_FUNC_MALLOC
-CFLAGS='-O3 -Wall -W -Winline -Werror -Wno-unused-parameter'
+CFLAGS='-O3 -Wall -W -Winline -Werror -Wno-unused-parameter -Wno-unused-result'
 AC_OUTPUT
