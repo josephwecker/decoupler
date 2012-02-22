@@ -1,9 +1,7 @@
-#include "dio.h"
 #include <stdio.h>
-
-
+#include "dio.h"
 
 int main(int argc, char *argv[]) {
-    printf("check: %d\n", test_int);
+    printf("check: \n");
     return 0;
 }
