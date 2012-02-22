@@ -1,7 +1,3 @@
-#include <sys/types.h>
-#include <unistd.h>
-#include <stddef.h>
-#include <stdint.h>
 
 #include "dio.h"
 
