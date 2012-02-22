@@ -17,24 +17,11 @@
 #include "dio.h"
 
 
-/* TODO:
- *  - [ ] Failure modes / esp. if there are still listeners...
- *
- * STATES:
- * - 1 Expecting
- * - 2 Active
- * - 3 Flushing
- * - 4 Dormant    | decoupler not running
- * - 5 Final      | decoupler not running
- */
-
-#define DECOUPLE_DORMANT 4
-
-
 int stdin_is_pipe = 0;
 int stdout_is_pipe = 0;
 
 static void daemonize() {
+    // TODO: correct error messages etc.
     pid_t pid, sid;
     if(getppid() == 1) return; // Already a daemon
     pid = fork();
@@ -88,7 +75,7 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    // First- check for handoff special-request
+    // First- check for quick edgecase where it's a normal finalized file
     if(stdout_is_pipe && cf_exists && !ss_exists && (curr_status() != DECOUPLE_DORMANT)) {
         int fd_in = open(argv[1], O_RDONLY | O_NONBLOCK);
         splice(fd_in, 0, STDOUT_FILENO, NULL, 4096, SPLICE_F_MOVE); // TODO: obviously fix size
