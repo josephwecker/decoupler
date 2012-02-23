@@ -31,7 +31,8 @@ ifeq ($(TARGET),Darwin)
 	CFLAGS   += -DUSE_KQUEUE
 else
 ifeq ($(TARGET),Linux)
-	CFLAGS   += -march=native -mtune=native -Ofast
+	# TODO: -Ofast if and only if gcc supports it
+	CFLAGS   += -march=native -mtune=native
 	CFLAGS   += -DUSE_EPOLL -DUSE_LINUX_SENDFILE -DUSE_SPLICE
 endif # Linux
 endif # Darwin
