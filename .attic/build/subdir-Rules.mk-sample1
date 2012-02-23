@@ -1,0 +1,44 @@
+# Standard things
+
+sp 		:= $(sp).x
+dirstack_$(sp)	:= $(d)
+d		:= $(dir)
+
+
+# Subdirectories, in random order
+
+dir	:= $(d)/test
+include		$(dir)/Rules.mk
+
+
+# Local variables
+
+OBJS_$(d)	:= $(d)/debug.o $(d)/md5.o $(d)/misc.o \
+		   $(d)/ringbuf.o $(d)/textfile.o $(d)/subprocs.o \
+		   $(d)/metadata.o $(d)/metatype.o \
+		   $(d)/metadict.o $(d)/metaops.o
+DEPS_$(d)	:= $(OBJS_$(d):%=%.d)
+
+CLEAN		:= $(CLEAN) $(OBJS_$(d)) $(DEPS_$(d)) \
+		   $(d)/common.a $(d)/platform.h
+
+
+# Local rules
+
+$(OBJS_$(d)):	CF_TGT := -I$(d)
+$(OBJS_$(d)):	$(d)/platform.h
+
+$(d)/common.a:	$(OBJS_$(d))
+		$(ARCH)
+
+$(d)/platform.h: $(d)/Rules.mk
+		$(DEFHDR) $@ $(S_CF_U_INT32_T) $(S_CF_VSNPRINTF) $(S_CF_SYSLOG)
+
+
+# Standard things
+
+-include	$(DEPS_$(d))
+
+d		:= $(dirstack_$(sp))
+sp		:= $(basename $(sp))
+
