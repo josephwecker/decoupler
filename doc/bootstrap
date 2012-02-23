@@ -1,0 +1,13 @@
+mkdir tmp
+cd tmp
+git clone https://code.google.com/p/waf/
+git clone https://github.com/numpy/numpy.git
+cd waf
+grep -v numpy ../numpy/numpy/distutils/cpuinfo.py > ./cpuinfo.py
+cat ../numpy/numpy/distutils/compat.py >> ./cpuinfo.py
+
+./waf-light --make-waf --tools=$PWD/cpuinfo.py
+mv waf ../
+cd ../
+rm -rf tmp
+# or something along those lines.  See http://docs.waf.googlecode.com/git/book_16/single.html#_obtaining_the_waf_file

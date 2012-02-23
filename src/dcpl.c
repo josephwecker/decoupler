@@ -14,7 +14,8 @@
 #include <sys/socket.h>
 #include <ctype.h>
 
-#include "dio.h"
+#include <dio.h>
+
 
 
 int stdin_is_pipe = 0;

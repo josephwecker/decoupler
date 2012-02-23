@@ -1,6 +1,11 @@
 # Editor stuff
 .*.swp
 
+# Build stuff
+.waf*
+.lock*
+.build
+
 # Compiled stuff
 dcpl
 *.lo
