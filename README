@@ -1,7 +1,21 @@
-# decoupler
+ Decoupler
+-----------
 
 Similar to a named pipe, but buffered, optimized for kernel-space-only data
 transfers in and out. Backed by a file.
 
 
+Compiling / Installing
+----------------------
 
+The following should do the trick:
+
+  $  ./waf configure build install
+
+See `./waf --help` for more options.
+
+
+Usage
+------------
+
+Still getting nailed down- see doc/notes.md for recent thoughts on how it's shaping up.

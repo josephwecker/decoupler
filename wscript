@@ -17,8 +17,8 @@ from waflib import Configure
 Configure.autoconfig = True
 
 def options(opt):
-	opt.load('compiler_c')
-	opt.load('gnu_dirs')
+    opt.load('compiler_c')
+    opt.load('gnu_dirs')
 
 def configure(conf):
     import waflib.extras.cpuinfo as cpuinfo
