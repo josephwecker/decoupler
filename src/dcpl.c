@@ -20,6 +20,16 @@
 int stdin_is_pipe = 0;
 int stdout_is_pipe = 0;
 
+
+
+int file_to_pipe(int file_fd, int pipe_fd) {
+#ifdef USE_SPLICE
+    return splice(file_fd, 0, pipe_fd, NULL, 4096, SPLICE_F_MOVE); // TODO: obviously fix size
+#else
+    return -1;
+#endif
+}
+
 static void daemonize() {
     // TODO: correct error messages etc.
     pid_t pid, sid;
@@ -78,7 +88,7 @@ int main(int argc, char *argv[]) {
     // First- check for quick edgecase where it's a normal finalized file
     if(stdout_is_pipe && cf_exists && !ss_exists && (curr_status() != DECOUPLE_DORMANT)) {
         int fd_in = open(argv[1], O_RDONLY | O_NONBLOCK);
-        splice(fd_in, 0, STDOUT_FILENO, NULL, 4096, SPLICE_F_MOVE); // TODO: obviously fix size
+        file_to_pipe(fd_in, STDOUT_FILENO);
         exit(EXIT_SUCCESS);
     }
 

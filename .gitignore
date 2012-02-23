@@ -1,22 +1,8 @@
 # Editor stuff
 .*.swp
 
-# Stuff built by autoconf
-.build-aux/
-.m4/
-Makefile
-Makefile.in
-aclocal.m4
-autom4te.cache/
-configure
-libtool
-.deps/
-.libs/
-stamp-h1
-
 # Compiled stuff
 dcpl
-decoupler
 *.lo
 *.o
 *.la
