@@ -2,6 +2,8 @@
 # version if realpath isn't defined on your system:
 # ROOTDIR=$(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
 ROOTDIR    ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+MAKEFLAGS   = --no-p -j
+QUIET       = yes
 
 # Guess about the build target if nothing's specified directly.
 TARGET     ?= $(shell $(ROOTDIR)build/target)
