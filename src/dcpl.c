@@ -15,6 +15,7 @@
 #include <ctype.h>
 
 #include <dio.h>
+#include <gx.h>
 
 
 
@@ -75,11 +76,11 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    if((fstat(STDIN_FILENO, &stat_buffer)) < 0) exit(errno);
+    if(gx_unlikely((fstat(STDIN_FILENO,  &stat_buffer)) < 0)) exit(errno);
     stdin_is_pipe = S_ISFIFO(stat_buffer.st_mode);
-    if((fstat(STDOUT_FILENO, &stat_buffer)) < 0) exit(errno);
+    if(gx_unlikely((fstat(STDOUT_FILENO, &stat_buffer)) < 0)) exit(errno);
     stdout_is_pipe = S_ISFIFO(stat_buffer.st_mode);
-    if(argc < 2 && !stdout_is_pipe) {
+    if(gx_unlikely(argc < 2 && !stdout_is_pipe)) {
         fprintf(stderr, "ERROR: You must specify the decoupling (intermediate) file, "
                 "or at least pipe the output to something and I'll use a temp file as "
                 "the intermediate.\n");
