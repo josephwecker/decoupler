@@ -51,7 +51,14 @@ def configure(conf):
             mandatory=False,
             msg="Checking for BSD version of sendfile")
     conf.check_cc(function_name='splice',
-            header_name='fcntl.h')
+            header_name='fcntl.h',
+            defines="_GNU_SOURCE", mandatory=False)
+    conf.check_cc(function_name='tee',
+            header_name='fcntl.h',
+            defines="_GNU_SOURCE", mandatory=False)
+    conf.check_cc(function_name='vmsplice',
+            header_name='fcntl.h',
+            defines="_GNU_SOURCE", mandatory=False)
 
     conf.env.CFLAGS = ['-Wall', '-pipe'] + OPTF
     if platform.system() == 'Darwin':
