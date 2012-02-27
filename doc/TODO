@@ -1,4 +1,4 @@
-[ ] Bring in stuff similar to haproxy/include/common/compiler.h and "kernel tricks"
+[D] Bring in stuff similar to haproxy/include/common/compiler.h and "kernel tricks"
 [ ] Quick error standardization / macros
 [ ] GCC optimization using cpuinfo etc. (in fact, make it generalized so I can
     use it in different projects...)
