@@ -20,6 +20,12 @@
  */
 #ifndef   GX_H
   #define GX_H
+
+
+  #define gx_min(m,n) ((m) < (n) ? (m) : (n))
+  #define gx_max(m,n) ((m) > (n) ? (m) : (n))
+
+
   #if          __GNUC__ > 3
     #ifndef    gx_likely
       #define  gx_likely(x)   __builtin_expect(!!(x), 1)

@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <string.h>
 
 #include <sys/un.h>
 #include <sys/socket.h>
@@ -16,13 +17,13 @@
 
 #include <dio.h>
 #include <gx.h>
+#include "config.h"
 
 
 
 int stdin_is_pipe = 0;
 int stdout_is_pipe = 0;
-
-
+DecouplerState dstate;
 
 int file_to_pipe(int file_fd, int pipe_fd) {
 #ifdef USE_SPLICE
@@ -31,6 +32,7 @@ int file_to_pipe(int file_fd, int pipe_fd) {
     return -1;
 #endif
 }
+
 
 static void daemonize() {
     // TODO: correct error messages etc.
@@ -55,18 +57,12 @@ static void daemonize() {
     return 0;
 }*/
 
-static int curr_status() {
-    return 0;
-}
-
 int main(int argc, char *argv[]) {
     // - If stdin has anything piping to it, treat it as a writing feed
     // - If stdout is not a terminal, treat it as a reading feed
     // - If another decoupler is already running on the file, turn over fds to it.
     // - Otherwise daemonize and do the thing.
     struct stat stat_buffer;
-    int cf_exists = 1;
-    int ss_exists = 0;
 
     if(argc > 1 && argv[1][0]=='-') { // heh, since we don't have commandline options yet
         fprintf(stderr, "Decoupler\nUsage:  %s [canonical-file]\n"
@@ -87,17 +83,53 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    int r = dio_stat(argv[1], &dstate);
+    if(r < 0) {
+        fprintf(stderr, "Couldn't stat the decoupled file.\n");
+        exit(errno);
+    }
+
+    int mgr = dio_manager_status(&dstate);
     // First- check for quick edgecase where it's a normal finalized file
-    if(stdout_is_pipe && cf_exists && !ss_exists && (curr_status() != DECOUPLE_DORMANT)) {
+    //if(stdout_is_pipe && cf_exists && !ss_exists && (curr_status() != DIO_DORMANT)) {
+    if(stdout_is_pipe                       &&
+            mgr == DIO_MGR_NONE             &&
+            dstate.dss.state != DIO_DORMANT &&
+            dstate.canonical_exists) {
         int fd_in = open(argv[1], O_RDONLY | O_NONBLOCK);
         file_to_pipe(fd_in, STDOUT_FILENO);
         exit(EXIT_SUCCESS);
     }
 
+
+
+
+    if(dio_manager_status(&dstate) == DIO_MGR_NONE) {
+
+    }
+
+    //fprintf(stderr, "%s\n%s\n",dstate.stat_fname, dstate.mgr_addr.sun_path);
+
     // TODO: open and check for / acquire lock on status file if not
     // special-case 0 below.
+    /*struct sockaddr_un ctrl_addr;
+    int ctrl_sfd;
+    ctrl_sfd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if(ctrl_sfd == -1) exit(errno);
+    memset(&ctrl_addr, 0, sizeof(struct sockaddr_un));
+    ctrl_addr.sun_family = AF_UNIX;
+    strncpy(ctrl_addr.sun_path, "/tmp/testing-lock2", sizeof(ctrl_addr.sun_path) - 1);
+
+    if(bind(ctrl_sfd, (struct sockaddr *) &ctrl_addr, sizeof(struct sockaddr_un)) == -1) {
+        fprintf(stderr, "COULD NOT BIND.\n");
+        exit(errno);
+    } else {
+        fprintf(stderr, "Bound!\n");
+    }*/
+
     if(stdin_is_pipe) {
         // Wants to write to the decoupling.
+
         // 1. ss_bindable? no: permissions? fail. INUSE/INVAL? do handoff
         //    negotiation (it might be an 'expecting' decoupler).
         // 2. status-dormant? yes: open cf append-mode
@@ -116,6 +148,7 @@ int main(int argc, char *argv[]) {
     }
 
 
+    //sleep(5);
     daemonize(); // TODO: this will move to the appropriate function- only if
                  // this process will become the official dcpl for the
                  // canonical file
