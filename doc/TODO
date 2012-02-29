@@ -1,6 +1,10 @@
+[ ] Rewrite dcpl in terms of dio_* interface
+[ ] dio_open_for_appending
+[ ] dio_open_for_reading
+
+
 [D] Bring in stuff similar to haproxy/include/common/compiler.h and "kernel tricks"
-[ ] Quick error standardization / macros
+[D] Quick error standardization / macros
 [ ] GCC optimization using cpuinfo etc. (in fact, make it generalized so I can
     use it in different projects...)
 [ ] Do quick darwin implementation of file_to_pipe
-[ ] On to the meat...
