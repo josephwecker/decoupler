@@ -1,6 +1,3 @@
-/* Exposed API
- *
- */
 #ifndef DIO_PRIVATE_H
 #define DIO_PRIVATE_H
 
@@ -12,28 +9,15 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 
-#define DIO_MAX_PATH_SIZE     1024
 
 
-#define DIO_UNDETERMINED      1
-#define DIO_EXPECTING         2|4
-#define DIO_ACTIVE            4
-#define DIO_FLUSHING          8|4
-#define DIO_DORMANT           16
-#define DIO_FINAL             32
-
-
-#define DIO_MGR_NONE          0
-#define DIO_MGR_ACCEPTING     1
-#define DIO_MGR_PARTIAL       -1
-
-typedef struct DecouplerSavedState {
+typedef struct DIOSavedState {
     pid_t                     mgr_pid;
     int                       state;     
-}   DecouplerSavedState;
+}   DIOSavedState;
 
-typedef struct DecouplerState {
-    DecouplerSavedState       dss;
+typedef struct DIOState {
+    DIOSavedState             dss;
 
     char                      stat_fname[DIO_MAX_PATH_SIZE];
     int                       stat_fd;
@@ -46,21 +30,11 @@ typedef struct DecouplerState {
     int                       canonical_exists;
     //struct stat               canonical_info;
 
-}   DecouplerState;
+}   DIOState;
 
 
-/* TODO: clean up interface a bit- make some things opaque. need to finish the
- * manager implementation first though.
- */
-extern int dio_stat(char *pathname, DecouplerState *ds);
-extern int dio_manager_status(DecouplerState *ds);
-
-/*int dio_open_for_appending(const char *pathname);
-int dio_open_for_reading(const char *pathname, size_t offset);
-int dio_state(const char *pathname);
-char *dio_fifo_name(const char *pathname);
-char *dio_statusfile_name(const char *pathname);
-*/
+extern int dio_stat(char *pathname, DIOState *ds);
+extern int dio_manager_status(DIOState *ds);
 
 /*
  * decoupler-file  | path | exists? |

@@ -4,6 +4,7 @@
 
 int main(int argc, char **argv) {
     char *decouple_fname;
+    DIOContext dio;
     int stdin_is_pipe = 0;
     int stdout_is_pipe = 0;
     struct stat stat_buffer;
@@ -17,10 +18,10 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    __( fstat(STDIN_FILENO, &stat_buffer),   E_FATAL;E_EXIT );
+    __( fstat(STDIN_FILENO, &stat_buffer), E_FATAL;E_EXIT );
     stdin_is_pipe = S_ISFIFO(stat_buffer.st_mode);
 
-    __( fstat(STDOUT_FILENO,&stat_buffer),   E_FATAL;E_EXIT );
+    __( fstat(STDOUT_FILENO,&stat_buffer), E_FATAL;E_EXIT );
     stdout_is_pipe = S_ISFIFO(stat_buffer.st_mode);
 
     if(gx_unlikely(argc < 2 && !stdout_is_pipe)) {
@@ -36,11 +37,12 @@ int main(int argc, char **argv) {
         decouple_fname = argv[1];
     }
 
+    __( dio_open(decouple_fname, &dio), E_FATAL;E_EXIT );
     if(stdin_is_pipe)
-        __( dio_add_autowriter(decouple_fname, STDIN_FILENO),  E_ERROR;E_EXIT );
+        __( dio_add_autowriter(&dio, STDIN_FILENO),  E_ERROR;E_EXIT );
     
     if(stdout_is_pipe)
-        __( dio_add_autoreader(decouple_fname, STDOUT_FILENO), E_ERROR;E_EXIT );
+        __( dio_add_autoreader(&dio, STDOUT_FILENO), E_ERROR;E_EXIT );
 
 
     exit(EXIT_SUCCESS);
