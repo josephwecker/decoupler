@@ -6,11 +6,20 @@
 #include <unistd.h>
 
 #include <dio.h>
+#include "dio_private.h"
 #include <gx.h>
 
 //#ifndef _BSD_SOURCE
 //#define _BSD_SOURCE  // for vfork
 //#endif
+
+int dio_add_autowriter(char *dcpl_fname, int in_fd) {
+    return(open(dcpl_fname, O_RDONLY));
+}
+
+int dio_add_autoreader(char *dcpl_fname, int out_fd) {
+    return(open(dcpl_fname, O_RDONLY));
+}
 
 
 static int get_fnames(char *pathname, DecouplerState *ds) {
@@ -25,7 +34,7 @@ static int get_fnames(char *pathname, DecouplerState *ds) {
         r1 = snprintf(ds->stat_fname, DIO_MAX_PATH_SIZE-1, "%s/.%s.dstat", pathname, base);
         r2 = snprintf(ds->mgr_addr.sun_path, sizeof(ds->mgr_addr.sun_path)-1, "%s/.%s.mgr", pathname, base);
     }
-    return gx_min(r1,r2);
+    return MIN(r1,r2);
 }
 
 static int open_read_or_rw(const char *fname, int *orw) {
