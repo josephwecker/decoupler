@@ -16,9 +16,15 @@ OPTF = ['-O3', '-finline-limit=20000', '-funroll-loops',
 from waflib import Configure
 Configure.autoconfig = True
 
+def build(bld):
+    bld.shlib(source='lib/dio.c', includes=['.build','include'],
+            target='dio', vnum=VERSION)
+    bld.program(source='src/dcpl.c', target='dcpl',
+            includes=['.build','include'], use=["dio"], vnum=VERSION)
+
 def options(opt):
     opt.load('compiler_c')
-    #opt.load('gnu_dirs')
+    opt.load('gnu_dirs')
 
 def configure(conf):
     import waflib.extras.cpuinfo as cpuinfo
@@ -66,9 +72,4 @@ def configure(conf):
         conf.env.LINKFLAGS += ['-arch', 'x86_64']
     conf.write_config_header('config.h')
 
-def build(bld):
-    bld.shlib(source='lib/dio.c', includes=['.build','include'],
-            target='dio', vnum=VERSION)
-    bld.program(source='src/dcpl.c', target='dcpl',
-            includes=['.build','include'], use=["dio"], vnum=VERSION)
 
