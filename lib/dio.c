@@ -2,6 +2,10 @@
 #ifdef HAVE_SPLICE
 #define _GNU_SOURCE
 #include <fcntl.h>
+#else
+#include <sys/types.h>
+//#include <sys/uio.h>
+#include <unistd.h>
 #endif
 #include "gx.h"
 #include "dio.h"
@@ -35,22 +39,27 @@ int dio_managed(DIOContext *ctx) {
 }
 
 static int send_existing_file(char *fname, int out_fd) {
-    // prepare to open file, daemonize, and do the thing.
-    // TODO: dup the out_fd and have small_daemon close stdin/stdout so
-    //       that this doesn't block up a pipeline.
+    // Daemonizes and does the transfer of a simple file to the out_fd
+    // oldschool style (blocking)
     int canon_fd = open(fname, O_RDONLY|O_NONBLOCK);
     int is_parent;
     if(canon_fd == -1) return -1;
+    X( out_fd = dup(out_fd), E_WARN);
     X( is_parent = small_daemon(), E_ERROR;E_RAISE);
     if(is_parent) return 0;
 
-#ifdef HAVE_SPLICE
     ssize_t transfered;
+#ifdef HAVE_SPLICE
     do {
         X( transfered = splice(canon_fd, NULL, out_fd, NULL, 1<<16, SPLICE_F_MOVE), E_FATAL;E_EXIT);
     } while(transfered > 0);
 #else
-    gx_log_warn("Not supported yet.");
+    ssize_t bytes_in;
+    char buf[4096];
+    do {
+        X( bytes_in = read(canon_fd, buf, 4096),      E_FATAL;E_EXIT);
+        X( transfered = write(out_fd, buf, bytes_in), E_FATAL;E_EXIT);
+    } while(bytes_in > 0);
 #endif
 
     exit(EXIT_SUCCESS);
@@ -65,6 +74,8 @@ static int small_daemon() {
     umask(0);
     X( sid = setsid(), E_WARN );
     X( chdir("/"),     E_WARN );  // Don't bind up the working dir
+    freopen("/dev/null", "r", stdin);
+    freopen("/dev/null", "w", stdout);
     return 0;
 }
 

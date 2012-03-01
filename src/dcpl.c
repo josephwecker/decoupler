@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
     // TODO: Some kind of default action when nothing being piped in or out
     //       like print some stats on the decoupling?
 
+    gx_log_debug("Exiting.");
     exit(EXIT_SUCCESS);
     return 0;
 }
