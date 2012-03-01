@@ -7,7 +7,6 @@
 .build
 
 # Compiled stuff
-dcpl
 *.lo
 *.o
 *.la

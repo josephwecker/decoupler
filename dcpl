@@ -1,0 +1,37 @@
+#!/bin/bash
+# Wrapper script that tries to update the executable first and sets the library
+# path to the freshly built library without installing it. For development /
+# debugging.
+#
+
+BS="${BASH_SOURCE[0]}";RL="readlink";([[ `uname -s`=='Darwin' ]] || RL="$RL -f")
+  while([ -h "${BS}" ]) do BS=`$RL "${BS}"`; done
+  N="/dev/null";pushd .>$N;cd `dirname ${BS}`>$N;BS=`pwd`;popd>$N
+
+pushd .>/dev/null
+cd ${BS}
+
+# Run waf but trick it into thinking we're a terminal so the colors etc. remain
+# even though we're redirecting to a temporary file.
+script -q -e -c './waf 2>&1' /dev/null > .waflog
+res=$?
+if [ $res == 0 ]; then
+  rm .waflog
+  if [ -x "${BS}/.build/dcpl" ]; then
+    popd>/dev/null
+    export LD_LIBRARY_PATH="${BS}/.build/:${LD_LIBRARY_PATH}"
+    exec "${BS}/.build/dcpl" $*
+  else
+    echo "Something went wrong with config or build but it reported success..."
+    echo "Try manually running:"
+    echo "$  cd ${BS}"
+    echo "$  ./waf configure build"
+    exit 1
+  fi
+else
+  echo "-----BUILD FAILED------"
+  echo ''
+  cat .waflog
+  rm .waflog
+  popd>/dev/null
+fi
