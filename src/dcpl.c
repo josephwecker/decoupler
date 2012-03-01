@@ -1,3 +1,16 @@
+/* --== dcpl ==--
+ * Decouple the input and output of a data transfer so they can go at their own pace.
+ * Just a light wrapper around libdio (decoupled input/output).
+ *
+ * Copyright 2012 Joseph Wecker
+ * BSD License
+ *
+ * TODO:
+ *  - stdin_is_pipe etc. -> stdin_is_tty and reverse conditionals so that if
+ *    they are files the can still be dio_added
+ *
+ */
+
 #include <gx.h>
 #include <dio.h>
 #include "config.h"
