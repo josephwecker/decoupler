@@ -44,6 +44,10 @@ int main(int argc, char **argv) {
     if(stdout_is_pipe)
         __( dio_add_autoreader(&dio, STDOUT_FILENO), E_ERROR;E_EXIT );
 
+    if(!stdout_is_pipe && !stdin_is_pipe)
+        gx_log_warn("Nothing to do- pipe something in or out.");
+    // TODO: Some kind of default action when nothing being piped in or out
+    //       like print some stats on the decoupling?
 
     exit(EXIT_SUCCESS);
     return 0;

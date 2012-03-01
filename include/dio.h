@@ -18,10 +18,16 @@ typedef struct DIOContext {
     char *                    canon_fname;
     char                      stat_fname[DIO_MAX_PATH_SIZE];
 
+    int                       canon_fd;
+    int                       stat_fd;
+    int                       stat_mode;
 } DIOContext;
 
 int dio_open(char *dcpl_fname, DIOContext *ctx);
 int dio_add_autowriter(DIOContext *ctx, int in_fd);
 int dio_add_autoreader(DIOContext *ctx, int out_fd);
+
+int dio_current_state(DIOContext *ctx);
+int dio_managed(DIOContext *ctx);
 
 #endif

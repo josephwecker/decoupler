@@ -33,8 +33,12 @@ typedef struct DIOState {
 }   DIOState;
 
 
-extern int dio_stat(char *pathname, DIOState *ds);
-extern int dio_manager_status(DIOState *ds);
+static int send_existing_file(char *fname, int out_fd);
+static int small_daemon();
+
+
+//extern int dio_stat(char *pathname, DIOState *ds);
+//extern int dio_manager_status(DIOState *ds);
 
 /*
  * decoupler-file  | path | exists? |
