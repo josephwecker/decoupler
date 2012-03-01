@@ -13,7 +13,9 @@ cd ${BS}
 
 # Run waf but trick it into thinking we're a terminal so the colors etc. remain
 # even though we're redirecting to a temporary file.
-script -q -e -c './waf 2>&1' /dev/null > .waflog
+#script -q -e -c './waf 2>&1' /dev/null > .waflog
+
+./.misc/unbuffer ./waf 2>&1 > .waflog
 res=$?
 if [ $res == 0 ]; then
   rm .waflog
