@@ -34,7 +34,7 @@ static int send_existing_file(char *fname, int out_fd) {
     int canon_fd = open(fname, O_RDONLY|O_NONBLOCK);
     int is_parent;
     if(canon_fd == -1) return -1;
-    __( is_parent = small_daemon(), E_ERROR;E_RAISE);
+    X( is_parent = small_daemon(), E_ERROR;E_RAISE);
     if(is_parent) {
         gx_log_debug("Hello from parent");
         return 0;
@@ -49,8 +49,8 @@ static int small_daemon() {
     if(pid != 0) return pid;
     // Child
     umask(0);
-    __( sid = setsid(), E_WARN );
-    __( chdir("/"),     E_WARN );  // Don't bind up the working dir
+    X( sid = setsid(), E_WARN );
+    X( chdir("/"),     E_WARN );  // Don't bind up the working dir
     return 0;
 }
 

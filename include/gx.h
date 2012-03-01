@@ -46,8 +46,8 @@
    * Example:
         char *myvar = NULL;
         if(argc<2) gx_log_info("Must specify at least one file to check.");
-        __n(myvar, E_WARN)
-        __(open(argv[1], O_RDONLY), E_PANIC;E_EXIT)
+        Xn(myvar, E_WARN)
+        X(open(argv[1], O_RDONLY), E_PANIC;E_EXIT)
 
    * Would emit something like this:
    * [info:tst.c:7:]  Must specify at least one file to check.
@@ -103,7 +103,7 @@
   #define gx_log_info(msg, ...)   gx_log(GX_LOG_INFO,   msg, ##__VA_ARGS__);
   #define gx_log_debug(msg,...)   gx_log(GX_LOG_DEBUG,  msg, ##__VA_ARGS__);
 
-  #define __(expr, actions)  {                                             \
+  #define X(expr, actions)  {                                              \
       if(gx_unlikely((expr) < 0)) {                                        \
           gx_expression[0] = '\0';                                         \
           snprintf(gx_expression, 255, #expr);                             \
@@ -112,7 +112,7 @@
           actions                                                          \
       }                                                                    \
   }
-  #define __n(expr, actions)  {                                            \
+  #define Xn(expr, actions)  {                                             \
       if(gx_unlikely((expr)==NULL)) {                                      \
           errno = EFAULT;                                                  \
           gx_expression[0] = '\0';                                         \
