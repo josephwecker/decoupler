@@ -1,6 +1,6 @@
 #ifndef DIO_PRIVATE_H
 #define DIO_PRIVATE_H
-
+#include "config.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <stddef.h>
