@@ -105,7 +105,7 @@
 
   #define gx_elog(loglvl) {                                                 \
       char gx_err_buf[1024];                                                \
-      strerror_r(errno, gx_err_buf, sizeof(gx_err_buf)-1);                  \
+      strerror_r(gx_errno, gx_err_buf, sizeof(gx_err_buf)-1);               \
       gx_log_simple((loglvl), gx_err_buf);                                  \
   }
 
@@ -117,9 +117,10 @@
   #define gx_log_debug(msg,...)   gx_log(GX_LOG_DEBUG,  msg, ##__VA_ARGS__);
 
   #define X(expr, actions)  {                                              \
-      if(gx_unlikely((expr) < 0)) {                                        \
+      if(gx_unlikely((int)(expr) < 0)) {                                   \
+          int gx_errno = errno;                                            \
           gx_expression[0] = '\0';                                         \
-          snprintf(gx_expression, 255, #expr);                             \
+          (void) snprintf(gx_expression, 255, #expr);                      \
           char *gx_exprstrt = strchr(gx_expression,'(');                   \
           if(gx_exprstrt) gx_exprstrt[0]='\0';                             \
           actions                                                          \
@@ -127,7 +128,8 @@
   }
   #define Xn(expr, actions)  {                                             \
       if(gx_unlikely((expr)==NULL)) {                                      \
-          errno = EFAULT;                                                  \
+          if(errno == 0) errno = EFAULT;                                   \
+          int gx_errno = errno;                                            \
           gx_expression[0] = '\0';                                         \
           snprintf(gx_expression, 255, #expr);                             \
           char *gx_exprstrt = strchr(gx_expression,'(');                   \
@@ -145,7 +147,7 @@
   #define E_DEBUG                 gx_elog(GX_LOG_DEBUG)
 
   #define E_RAISE                 return(-1);
-  #define E_EXIT                  exit(errno);
+  #define E_EXIT                  exit(gx_errno);
   #define E_JMP(errjmplabel)      goto errjmplabel;
 
 

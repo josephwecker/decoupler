@@ -80,8 +80,8 @@ static int small_daemon() {
     X( chdir("/"),     E_WARN );  // Don't bind up the working dir
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
-    X( freopen("/dev/null", "r", stdin), E_WARN);
-    X( freopen("/dev/null", "w", stdout), E_WARN);
+    Xn( freopen("/dev/null", "r", stdin), E_WARN);
+    Xn( freopen("/dev/null", "w", stdout), E_WARN);
 #pragma GCC diagnostic pop
     return 0;
 }
