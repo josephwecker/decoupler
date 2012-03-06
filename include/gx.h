@@ -73,7 +73,7 @@
 
   #define GX_D   GX_C_BG GX_C_DELIM ":" GX_C_REF   // Shorthand for internal use
 
-  #define gx_log(loglvl,msg,...) {                                          \
+  #define gx_log_prep_(loglvl) \
       int gx_err_lvl = (loglvl);                                            \
       char *gx_epre;                                                        \
       switch(gx_err_lvl) {                                                  \
@@ -85,17 +85,28 @@
           case GX_LOG_DEBUG:   gx_epre=GX_C_DEBUG "debug";   break;         \
           default:             gx_epre=GX_C_UNKN  "unknown"; break;         \
       }                                                                     \
-      fprintf(stderr,GX_C_BG GX_C_DELIM "[%s" GX_D "%s" GX_D "%d" GX_D "%s" \
-              GX_C_DELIM "]" GX_C_NORMAL "  ", gx_epre, __FILE__,           \
+
+  #define GX_LOG_FORMAT_BASE_ \
+      GX_C_BG GX_C_DELIM "[%s" GX_D "%s" GX_D "%d" GX_D "%s" GX_C_DELIM "]" GX_C_NORMAL "  "
+
+  #define gx_log_simple(loglvl, msg) {                                      \
+      gx_log_prep_(loglvl)                                                  \
+      fprintf(stderr,GX_LOG_FORMAT_BASE_ "%s\n", gx_epre, __FILE__,         \
+              __LINE__, gx_expression, msg);                                \
+  }
+
+  #define gx_log(loglvl,msg,...) {                                          \
+      gx_log_prep_(loglvl)                                                  \
+      fprintf(stderr,GX_LOG_FORMAT_BASE_, gx_epre, __FILE__,                \
               __LINE__, gx_expression);                                     \
-      fprintf(stderr,msg,##__VA_ARGS__);                                    \
+      fprintf(stderr,msg, ##__VA_ARGS__ );                                  \
       fprintf(stderr,"\n");                                                 \
   }
 
   #define gx_elog(loglvl) {                                                 \
       char gx_err_buf[1024];                                                \
       strerror_r(errno, gx_err_buf, sizeof(gx_err_buf)-1);                  \
-      gx_log((loglvl), gx_err_buf);                                         \
+      gx_log_simple((loglvl), gx_err_buf);                                  \
   }
 
   #define gx_log_panic(msg,...)   gx_log(GX_LOG_PANIC,  msg, ##__VA_ARGS__);

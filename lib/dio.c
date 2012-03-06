@@ -78,8 +78,11 @@ static int small_daemon() {
     umask(0);
     X( sid = setsid(), E_WARN );
     X( chdir("/"),     E_WARN );  // Don't bind up the working dir
-    freopen("/dev/null", "r", stdin);
-    freopen("/dev/null", "w", stdout);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+    X( freopen("/dev/null", "r", stdin), E_WARN);
+    X( freopen("/dev/null", "w", stdout), E_WARN);
+#pragma GCC diagnostic pop
     return 0;
 }
 

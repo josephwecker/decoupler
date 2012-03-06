@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
 
     if(argc < 2) {
         /* TODO: populate decouple_fname with tempfile name */
+        decouple_fname = "tmp";
     } else {
         decouple_fname = argv[1];
     }

@@ -1,10 +1,12 @@
-ctags - make sure updated
+ctags - make sure updated (project)
 
-set pwd (for ctags)
+set pwd (for ctags) (project)
 
-set makeprg=./waf
+set makeprg=./waf (project)
 
-:compiler gcc
+:compiler gcc   (project)
+
+manpages   "K"  (global-personal - modified width)
 
 ------------------
 
@@ -21,3 +23,5 @@ strace
 gdb
 
 valgrind
+
+lint
