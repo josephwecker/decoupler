@@ -28,6 +28,7 @@ int dio_add_autoreader(DIOContext *ctx, int out_fd) {
         /* Edge case where we can simply sendfile the existing file. */
         return send_existing_file(ctx->canon_fname, out_fd);
     }
+    return -1;
 }
 
 int dio_current_state(DIOContext *ctx)  {
@@ -38,6 +39,9 @@ int dio_managed(DIOContext *ctx) {
     return DIO_MGR_NONE;
 }
 
+
+/* As of now, only used in the edge case of someone reading a finalized file.
+ */
 static int send_existing_file(char *fname, int out_fd) {
     // Daemonizes and does the transfer of a simple file to the out_fd
     // oldschool style (blocking)

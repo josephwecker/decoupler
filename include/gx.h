@@ -86,8 +86,10 @@
           default:             gx_epre=GX_C_UNKN  "unknown"; break;         \
       }                                                                     \
       fprintf(stderr,GX_C_BG GX_C_DELIM "[%s" GX_D "%s" GX_D "%d" GX_D "%s" \
-              GX_C_DELIM "]" GX_C_NORMAL "  %s\n", gx_epre, __FILE__,       \
-              __LINE__, gx_expression, msg, ##__VA_ARGS__);                 \
+              GX_C_DELIM "]" GX_C_NORMAL "  ", gx_epre, __FILE__,           \
+              __LINE__, gx_expression);                                     \
+      fprintf(stderr,msg,##__VA_ARGS__);                                    \
+      fprintf(stderr,"\n");                                                 \
   }
 
   #define gx_elog(loglvl) {                                                 \

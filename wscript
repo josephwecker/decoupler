@@ -66,7 +66,7 @@ def configure(conf):
     conf.check_cc(function_name='vmsplice', header_name='fcntl.h',
             defines="_GNU_SOURCE", mandatory=False)
 
-    conf.env.CFLAGS = ['-Wall', '-pipe'] + OPTF
+    conf.env.CFLAGS = ['-Werror', '-Wall', '-pipe'] + OPTF
     if platform.system() == 'Darwin':
         conf.env.CFLAGS += ['-arch', 'x86_64', '-fast']
         conf.env.LINKFLAGS += ['-arch', 'x86_64']

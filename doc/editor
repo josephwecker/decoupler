@@ -1,0 +1,23 @@
+ctags - make sure updated
+
+set pwd (for ctags)
+
+set makeprg=./waf
+
+:compiler gcc
+
+------------------
+
+autocomplete?
+
+signatures?
+
+git-grep / search-include-path?
+
+profiler
+
+strace
+
+gdb
+
+valgrind
