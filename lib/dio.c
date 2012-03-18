@@ -78,11 +78,15 @@ static int small_daemon() {
     umask(0);
     X( sid = setsid(), E_WARN );
     X( chdir("/"),     E_WARN );  // Don't bind up the working dir
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
+#endif
     Xn( freopen("/dev/null", "r", stdin), E_WARN);
     Xn( freopen("/dev/null", "w", stdout), E_WARN);
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
 #pragma GCC diagnostic pop
+#endif
     return 0;
 }
 
