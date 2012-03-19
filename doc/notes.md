@@ -59,3 +59,59 @@ fast as the second, that's a problem...)
 
 
 
+
+# auto-writer
+
+
+
+# auto-reader
+
+
+
+
+| dcpl state   | mgr state | action | result                                          |
+|--------------|-----------|--------|-------------------------------------------------|
+| undetermined | open      | reader | pass-reader; [dcpl:expecting]                   |
+| undetermined | open      | writer | pass-writer; [touch]; [dcpl:active]             |
+| undetermined | none      | reader | exec; pass-reader; [dcpl:expecting]             |
+| undetermined | none      | writer | exec; pass-writer; [touch]; [dcpl:active]       |
+|              |           |        |                                                 |
+| expecting    | open      | reader | pass-reader                                     |
+| expecting    | open      | writer | pass-writer; [touch]; [dcpl:active]             |
+| expecting    | none      | reader | warn; exec; pass-reader                         |
+| expecting    | none      | writer | warn; exec; pass-writer; [touch]; [dcpl:active] |
+|              |           |        |
+| active       | open      | reader |
+| active       | open      | writer |
+| active       | none      | reader |
+| active       | none      | writer |
+|              |           |        |
+| flushing     |
+|              |           |        |
+| dormant    |
+|              |           |        |
+| finished   |
+
+
+no manager and state != undetermined --->
+
+| Finish type                       | Has-content | Set-state                        |
+|-----------------------------------|-------------|----------------------------------|
+| writer fd EOF'ed                  | yes         | finished/dormant                 |
+| writer fd EOF'ed                  | no          | finished/dormant                 |
+| writer fd errored/premature-close | yes         | finished/dormant                 |
+| writer fd errored/premature-close | no          | write-error --> dormant          |
+| mgr errored out / killed grizzly  | yes         | a/fl --> finished/dormant        |
+| mgr errored out / killed grizzly  | no          | e/a  --> write-error --> dormant |
+| mgr killed nicely                 | yes         | finished/dormant (ovr w/ signal) |
+| mgr killed nicely                 | no          | finished/dormant (ovr w/ signal) |
+
+reader errors out- no problem (depending on error maybe info/debug/warn)
+
+
+(add-reader when in finished state- still do socket-pair and then sendfile to
+socket so that it's pollable in an expected way)
+
+need to store:
+ - will-be-dormant vs. will-be-finished (possibly changable via api)
+ - current state

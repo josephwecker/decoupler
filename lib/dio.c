@@ -41,6 +41,7 @@ int dio_managed(DIOContext *ctx) {
 
 
 /* As of now, only used in the edge case of someone reading a finalized file.
+ * (implies EOF will be propagated as well).
  */
 static int send_existing_file(char *fname, int out_fd) {
     // Daemonizes and does the transfer of a simple file to the out_fd
@@ -78,15 +79,19 @@ static int small_daemon() {
     umask(0);
     X( sid = setsid(), E_WARN );
     X( chdir("/"),     E_WARN );  // Don't bind up the working dir
+
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
 #endif
+
     Xn( freopen("/dev/null", "r", stdin), E_WARN);
     Xn( freopen("/dev/null", "w", stdout), E_WARN);
+
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5)
 #pragma GCC diagnostic pop
 #endif
+
     return 0;
 }
 
