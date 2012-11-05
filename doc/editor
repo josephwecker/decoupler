@@ -10,18 +10,17 @@ manpages   "K"  (global-personal - modified width)
 
 ------------------
 
+gdb:  pyclewn
+
 autocomplete?
 
 signatures?
 
 git-grep / search-include-path?
 
-profiler
+profiler : VTune / CodeAnalyst / oprofile
 
 strace
-
-gdb
-
-valgrind
+valgrind (callgrind / kcachegrind)
 
 lint
